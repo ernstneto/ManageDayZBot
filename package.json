@@ -1,0 +1,28 @@
+{
+  "name": "managedayzbot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx --watch src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "canvas": "^3.2.3",
+    "discord.js": "^14.26.2",
+    "dotenv": "^17.4.2",
+    "groq-sdk": "^1.1.2",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "@types/sqlite3": "^3.1.11",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  }
+}

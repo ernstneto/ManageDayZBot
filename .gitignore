@@ -1,0 +1,11 @@
+# Dependências do Node
+node_modules/
+
+# Chaves de Segurança
+.env
+
+# Banco de Dados Local
+dados.db
+
+# Arquivos de Build
+dist/

@@ -6,6 +6,9 @@ node_modules/
 
 # Banco de Dados Local
 dados.db
-
+arsenal.db
+arsenal_v3.db
+*.db
+gitr
 # Arquivos de Build
 dist/

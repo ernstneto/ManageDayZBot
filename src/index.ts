@@ -5,7 +5,14 @@ import { executeLoc } from "./commands/loc.js";
 import { executeSugestao } from "./commands/sugestao.js";
 import { executeBase } from "./commands/base.js";
 import { executeArquitetura } from "./commands/arquitetura.js";
-import { executeTesteImagem } from "./commands/testeimagem.js";
+import { executeTesteImagem } from "./sandbox/testeimagem.js";
+import { executeEstoque } from "./commands/estoque.js";
+import { executeFrota } from "./commands/frota.js";
+import { executeMapa } from "./commands/mapa.js";
+import { executeMissao, executeRanking } from "./commands/missao.js";
+import  { initDB } from "./database/connection.js";
+import { executeCla } from "./commands/cla.js";
+import { executeMembro } from "./commands/membro.js";
 
 
 
@@ -37,7 +44,8 @@ client.once("clientReady", () => {
   console.log(`🤖 Base estabelecida! ${client.user?.tag} online e aguardando comandos.`);
 });
 */
-client.once("clientReady", () => {
+client.once("clientReady", async () => {
+    await initDB();  
     console.log(`🤖 Base estabelecida! ${client.user?.tag} online!`);
     
     // O RADAR: Conta em quantos servidores o bot está
@@ -52,6 +60,7 @@ client.once("clientReady", () => {
         console.log("🚨 ALERTA CRÍTICO: O bot não está em nenhum servidor! Você precisa usar o link OAuth2 para o convidar.");
     }
 });
+
 client.on("messageCreate", async (message) => {
   // console.log(message.content);
   console.log(`DEBUG: ${message.author.bot}, ${message.content}`);
@@ -60,7 +69,7 @@ client.on("messageCreate", async (message) => {
   const args = message.content.slice(1).trim().split(/ +/);
   const comandoTag = args.shift()?.toLowerCase();
   const relatoAveriguar = args.join(" ");
-    console.log(`DEBUG: ${args}, ${comandoTag}, ${relatoAveriguar}`);
+    console.log(`DEBUG [message.content]: ${args}, ${comandoTag}, ${relatoAveriguar}`);
 
 
   console.log(`[DEBUG] O Discord enviou a mensagem. A tag identificada foi: "${comandoTag}"`);
@@ -83,7 +92,21 @@ client.on("messageCreate", async (message) => {
     await executeArquitetura(message, args);
   } else if (comandoTag === "testeimagem") {
     await executeTesteImagem(message);
-  } 
+  } else if (comandoTag === "estoque") {
+    await executeEstoque(message, args);
+  } else if (comandoTag === "frota") {
+    await executeFrota(message, args);
+  } else if (comandoTag === "mapa") {
+    await executeMapa(message, args);
+  } else if (comandoTag === "missao") {
+    await executeMissao(message, args);
+  } else if (comandoTag === "ranking") {
+    await executeRanking(message);
+  } else if (comandoTag === "cla") {
+    await executeCla(message, args);
+  } else if (comandoTag === "membro") {
+    await executeMembro(message, args);
+  }
 });
 
 client.login(process.env.DISCORD_TOKEN);
@@ -94,6 +117,8 @@ client.login(process.env.DISCORD_TOKEN)
   .catch((erro) => {
       console.error("🚨 Falha crítica ao tentar logar:", erro);
   });
+
+client.on("error", (erro) => console.error("🚨 [Discord API Erro]:", erro));
 /*
 try {
   // Chamada para a Groq usando o modelo ultrarrápido LLaMA 3

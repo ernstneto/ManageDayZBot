@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ManageDayzBot — Comando Tático</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- ── Sidebar ─────────────────────────────────────── -->
+    <nav class="sidebar">
+      <div class="brand">
+        <span class="brand-icon">🎯</span>
+        <div>
+          <h1>ManageDayz</h1>
+          <small>Comando Tático v2.0</small>
+        </div>
+      </div>
+      <ul class="nav-links">
+        <li class="active" data-panel="dashboard">📊 Dashboard</li>
+        <li data-panel="clas">🏰 Clãs</li>
+        <li data-panel="membros">🪖 Membros</li>
+        <li data-panel="estoque">📦 Estoque</li>
+        <li data-panel="frota">🚙 Frota</li>
+        <li data-panel="missoes">🎖️ Missões</li>
+        <li data-panel="bases">🗺️ Bases</li>
+        <li data-panel="auditoria">🕵️ Auditoria</li>
+        <li data-panel="chat">💬 Chat</li>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">A ligar...</span>
+      </div>
+    </nav>
+
+    <!-- ── Main Content ───────────────────────────────── -->
+    <main class="content">
+      <!-- Dashboard -->
+      <section id="panel-dashboard" class="panel active">
+        <h2>📊 Painel de Comando</h2>
+        <div class="cards-grid">
+          <div class="card" id="card-clas">
+            <div class="card-icon">🏰</div>
+            <div class="card-info">
+              <span class="card-value" id="stat-clas">—</span>
+              <span class="card-label">Clãs Ativos</span>
+            </div>
+          </div>
+          <div class="card" id="card-missoes">
+            <div class="card-icon">🎖️</div>
+            <div class="card-info">
+              <span class="card-value" id="stat-missoes">—</span>
+              <span class="card-label">Missões Ativas</span>
+            </div>
+          </div>
+          <div class="card" id="card-frota">
+            <div class="card-icon">🚙</div>
+            <div class="card-info">
+              <span class="card-value" id="stat-frota">—</span>
+              <span class="card-label">Veículos</span>
+            </div>
+          </div>
+          <div class="card" id="card-estoque">
+            <div class="card-icon">📦</div>
+            <div class="card-info">
+              <span class="card-value" id="stat-estoque">—</span>
+              <span class="card-label">Itens em Estoque</span>
+            </div>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <h3>Ações Rápidas</h3>
+          <div class="action-buttons">
+            <button onclick="showModal('modalCla')">➕ Criar Clã</button>
+            <button onclick="showModal('modalAlistar')">🪖 Alistar Membro</button>
+            <button onclick="showModal('modalDepositar')">📥 Depositar Item</button>
+            <button onclick="showModal('modalMissao')">🎖️ Criar Missão</button>
+            <button onclick="showModal('modalVeiculo')">🚙 Registar Veículo</button>
+            <button onclick="showModal('modalBase')">📍 Registar Base</button>
+          </div>
+        </div>
+        <div class="recent-activity-section">
+          <h3>📋 Atividade Recente</h3>
+          <div id="recent-activity" class="data-list"></div>
+        </div>
+        <div class="notifications-section">
+          <h3>🔔 Notificações <span id="notif-count" class="badge badge-red" style="display:none;">0</span></h3>
+          <div id="notifications-list" class="data-list">
+            <div class="empty">Sem notificações novas.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chat -->
+      <section id="panel-chat" class="panel">
+        <h2>💬 Chat Unificado</h2>
+        <div class="chat-container">
+          <div class="chat-status" id="chatStatus">
+            <span class="status-dot" id="chatStatusDot"></span>
+            <span id="chatStatusText">A ligar...</span>
+          </div>
+          <div class="chat-messages" id="chatMessages"></div>
+          <div class="chat-input-area">
+            <input type="text" id="chatUsername" placeholder="Teu username" style="max-width: 150px;" />
+            <input type="text" id="chatInput" placeholder="Escreve uma mensagem..." onkeypress="if(event.key==='Enter')sendChat()" />
+            <button class="btn-primary" onclick="sendChat()">Enviar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Clãs -->
+      <section id="panel-clas" class="panel">
+        <h2>🏰 Clãs Registados</h2>
+        <div class="toolbar">
+          <button onclick="showModal('modalCla')">➕ Novo Clã</button>
+          <button onclick="loadClas()">🔄 Atualizar</button>
+        </div>
+        <div id="clas-list" class="data-list"></div>
+      </section>
+
+      <!-- Membros -->
+      <section id="panel-membros" class="panel">
+        <h2🪖 Membros</h2>
+        <div class="toolbar">
+          <button onclick="showModal('modalAlistar')">➕ Alistar</button>
+          <button onclick="showModal('modalPromover')">🎖️ Promover</button>
+          <button onclick="loadMembros()">🔄 Atualizar</button>
+        </div>
+        <div id="membros-list" class="data-list"></div>
+      </section>
+
+      <!-- Estoque -->
+      <section id="panel-estoque" class="panel">
+        <h2>📦 Estoque do Clã</h2>
+        <div class="toolbar">
+          <input type="text" id="estoque-user" placeholder="Teu username Discord" />
+          <button onclick="loadEstoque()">🔍 Consultar</button>
+          <button onclick="showModal('modalDepositar')">📥 Depositar</button>
+          <button onclick="showModal('modalRetirar')">📤 Retirar</button>
+        </div>
+        <div id="estoque-list" class="data-list"></div>
+      </section>
+
+      <!-- Frota -->
+      <section id="panel-frota" class="panel">
+        <h2🚙 Frota do Clã</h2>
+        <div class="toolbar">
+          <input type="text" id="frota-user" placeholder="Teu username Discord" />
+          <button onclick="loadFrota()">🔍 Consultar</button>
+          <button onclick="showModal('modalVeiculo')">➕ Registar</button>
+          <button onclick="showModal('modalPeca')">🔧 Manutenção</button>
+        </div>
+        <div id="frota-list" class="data-list"></div>
+      </section>
+
+      <!-- Missões -->
+      <section id="panel-missoes" class="panel">
+        <h2>🎖️ Quadro de Missões</h2>
+        <div class="toolbar">
+          <input type="text" id="missoes-user" placeholder="Teu username Discord" />
+          <button onclick="loadMissoes()">🔍 Consultar</button>
+          <button onclick="showModal('modalMissao')">➕ Criar Missão</button>
+          <button onclick="loadRanking()">🏆 Ranking</button>
+        </div>
+        <div id="missoes-list" class="data-list"></div>
+        <div id="ranking-list" class="data-list" style="margin-top: 1.5rem;"></div>
+      </section>
+
+      <!-- Bases -->
+      <section id="panel-bases" class="panel">
+        <h2>🗺️ Bases Registadas</h2>
+        <div class="toolbar">
+          <input type="text" id="bases-user" placeholder="Teu username Discord" />
+          <button onclick="loadBases()">🔍 Consultar</button>
+          <button onclick="showModal('modalBase')">📍 Nova Base</button>
+        </div>
+        <div id="bases-list" class="data-list"></div>
+      </section>
+
+      <!-- Auditoria -->
+      <section id="panel-auditoria" class="panel">
+        <h2>🕵️ Registos de Auditoria</h2>
+        <div class="toolbar">
+          <input type="text" id="auditoria-user" placeholder="Teu username Discord" />
+          <button onclick="loadAuditoria()">🔍 Consultar</button>
+        </div>
+        <div id="auditoria-list" class="data-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ── Modals ───────────────────────────────────────── -->
+  <div id="modal-overlay" class="modal-overlay" onclick="closeModals()"></div>
+
+  <!-- Criar Clã -->
+  <div id="modalCla" class="modal">
+    <h3>🏰 Criar Novo Clã</h3>
+    <input type="text" id="cla-nome" placeholder="Nome do clã *" />
+    <input type="text" id="cla-tag" placeholder="Tag (ex: MAD)" />
+    <input type="text" id="cla-desc" placeholder="Descrição" />
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="submitCla()">Criar</button>
+      <button class="btn-secondary" onclick="closeModals()">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Alistar Membro -->
+  <div id="modalAlistar" class="modal">
+    <h3>🪖 Alistar Membro</h3>
+    <input type="text" id="alistar-usuario" placeholder="Username Discord *" />
+    <input type="text" id="alistar-cla" placeholder="Nome do clã *" />
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="submitAlistar()">Alistar</button>
+      <button class="btn-secondary" onclick="closeModals()">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Promover Membro -->
+  <div id="modalPromover" class="modal">
+    <h3>🎖️ Promover Membro</h3>
+    <input type="text" id="promover-autor" placeholder="Teu username (autor) *" />
+    <input type="text" id="promover-alvo" placeholder="Username do soldado *" />
+    <select id="promover-patente">
+      <option value="">— Seleciona a patente —</option>
+      <option>Recruta</option>
+      <option>Soldado</option>
+      <option>Sargento</option>
+      <option>Cabo</option>
+      <option>Major</option>
+      <option>Capitão</option>
+      <option>Oficial</option>
+      <option>General</option>
+    </select>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="submitPromover()">Promover</button>
+      <button class="btn-secondary" onclick="closeModals()">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Depositar Item -->
+  <div id="modalDepositar" class="modal">
+    <h3>📥 Depositar no Estoque</h3>
+    <input type="text" id="depositar-usuario" placeholder="Teu username *" />
+    <input type="text" id="depositar-item" placeholder="Nome do item *" />
+    <input type="number" id="depositar-qtd" placeholder="Quantidade *" min="1" />
+    <input type="text" id="depositar-local" placeholder="Local (ex: Base Norte) *" />
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="submitDepositar()">Depositar</button>
+      <button class="btn-secondary" onclick="closeModals()">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Retirar Item -->
+  <div id="modalRetirar" class="modal">
+    <h3>📤 Retirar do Estoque</h3>
+    <input type="text" id="retirar-usuario" placeholder="Teu username *" />
+    <input type="number" id="retirar-id" placeholder="ID do item *" min="1" />
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="submitRetirar()">Retirar</button>
+      <button class="btn-secondary" onclick="closeModals()">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Criar Missão -->
+  <div id="modalMissao" class="modal">
+    <h3>🎖️ Criar Missão</h3>
+    <input type="text" id="missao-autor" placeholder="Teu username *" />
+    <input type="text" id="missao-nome" placeholder="Nome da operação" />
+    <textarea id="missao-desc" placeholder="Descrição da missão *" rows="3"></textarea>
+    <input type="number" id="missao-recompensa" placeholder="Pontos de recompensa *" min="1" />
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="submitMissao()">Criar</button>
+      <button class="btn-secondary" onclick="closeModals()">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Aceitar Missão -->
+  <div id="modalAceitarMissao" class="modal">
+    <h3>✅ Aceitar Missão</h3>
+    <input type="text" id="aceitar-missao-usuario" placeholder="Teu username *" />
+    <input type="number" id="aceitar-missao-id" placeholder="ID da missão *" min="1" />
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="submitAceitarMissao()">Aceitar</button>
+      <button class="btn-secondary" onclick="closeModals()">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Concluir Missão -->
+  <div id="modalConcluirMissao" class="modal">
+    <h3>🎉 Concluir Missão</h3>
+    <input type="text" id="concluir-missao-usuario" placeholder="Teu username *" />
+    <input type="number" id="concluir-missao-id" placeholder="ID da missão *" min="1" />
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="submitConcluirMissao()">Concluir</button>
+      <button class="btn-secondary" onclick="closeModals()">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Registar Veículo -->
+  <div id="modalVeiculo" class="modal">
+    <h3>🚙 Registar Veículo</h3>
+    <input type="text" id="veiculo-usuario" placeholder="Teu username *" />
+    <input type="text" id="veiculo-nome" placeholder="Veículo (ex: Lada) *" />
+    <input type="number" id="veiculo-x" placeholder="Coord X *" />
+    <input type="number" id="veiculo-y" placeholder="Coord Y *" />
+    <input type="text" id="veiculo-obs" placeholder="Observações" />
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="submitVeiculo()">Registar</button>
+      <button class="btn-secondary" onclick="closeModals()">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Atualizar Peça -->
+  <div id="modalPeca" class="modal">
+    <h3>🔧 Manutenção de Veículo</h3>
+    <input type="text" id="peca-usuario" placeholder="Teu username *" />
+    <input type="number" id="peca-id" placeholder="ID do veículo *" min="1" />
+    <select id="peca-tipo">
+      <option value="">— Seleciona a peça —</option>
+      <option value="bateria">Bateria</option>
+      <option value="radiador">Radiador</option>
+      <option value="vela">Vela</option>
+      <option value="combustivel">Combustível</option>
+    </select>
+    <input type="text" id="peca-estado" placeholder="Estado (ex: Boa, 80, Cheia) *" />
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="submitPeca()">Atualizar</button>
+      <button class="btn-secondary" onclick="closeModals()">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Registar Base -->
+  <div id="modalBase" class="modal">
+    <h3>📍 Registar Base</h3>
+    <input type="text" id="base-usuario" placeholder="Teu username *" />
+    <input type="text" id="base-nome" placeholder="Nome da base *" />
+    <input type="text" id="base-x" placeholder="Coord X (ex: 5420) *" />
+    <input type="text" id="base-y" placeholder="Coord Y (ex: 2691) *" />
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="submitBase()">Registar</button>
+      <button class="btn-secondary" onclick="closeModals()">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

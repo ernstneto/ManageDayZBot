@@ -10,5 +10,6 @@ arsenal.db
 arsenal_v3.db
 *.db
 gitr
+*.txt
 # Arquivos de Build
 dist/

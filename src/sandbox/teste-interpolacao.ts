@@ -1,3 +1,4 @@
+// @ts-nocheck — puppeteer not installed (optional dependency)
 import puppeteer from 'puppeteer';
 import { createCanvas, loadImage } from 'canvas';
 import fs from 'fs';

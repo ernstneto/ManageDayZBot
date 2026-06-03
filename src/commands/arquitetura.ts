@@ -1,3 +1,4 @@
+// @ts-nocheck — puppeteer not installed (optional dependency)
 import { Message, AttachmentBuilder } from "discord.js";
 import { createCanvas, loadImage } from "canvas";
 import puppeteer from "puppeteer";

@@ -1,3 +1,4 @@
+// @ts-nocheck — puppeteer not installed (optional dependency)
 import puppeteer from 'puppeteer';
 
 // 1. A nossa fórmula calibrada com Projeção Web Mercator

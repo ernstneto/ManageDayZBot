@@ -6,7 +6,7 @@ export async function executeEstoque(message: Message, args: string[]) {
         return message.reply("📦 **Logística do Clã:**\n`!estoque guardar [Qtd] [Item] em [Local]`\n`!estoque retirar [ID]`\n`!estoque listar`\n`!estoque auditoria`");
     }
 
-    const acao = args[0].toLowerCase();
+    const acao = args[0]?.toLowerCase();
     const username = message.author.username;
 
     try {
@@ -17,23 +17,23 @@ export async function executeEstoque(message: Message, args: string[]) {
             
             if (partes.length < 2) return message.reply("⚠️ Usa o formato: `!estoque guardar 5 pregos em Tenda 1`");
             
-            const qtd = parseInt(args[1]);
+            const qtd = parseInt(args[1] ?? "");
             if (isNaN(qtd)) return message.reply("⚠️ Indica uma quantidade válida.");
-            
+
             // Extrai o nome do item ignorando o número da quantidade
-            const item = partes[0].replace(args[1], "").trim();
-            const local = partes[1].trim();
+            const item = (partes[0] ?? "").replace(args[1] ?? "", "").trim();
+            const local = (partes[1] ?? "").trim();
 
             await depositarItem(username, item, qtd, local);
             return message.reply(`✅ Recebido no armazém: **${qtd}x ${item}** guardado em **${local}**.`);
         }
 
         if (acao === "retirar") {
-            const id = Number(args[1]);
+            const id = Number(args[1] ?? "");
             if (isNaN(id)) return message.reply("⚠️ Indica o ID do item. Ex: `!estoque retirar 3`");
 
             const item = await retirarItem(username, id);
-            return message.reply(`📤 Levantamento autorizado: **${item.quantidade}x ${item.item}** retirado de **${item.local_armazenamento}** por ${username}.`);
+            return message.reply(`📤 Levantamento autorizado: **${item.quantidade}x ${item.item}** retirado de **${item.local}** por ${username}.`);
         }
 
         if (acao === "listar") {
@@ -42,7 +42,7 @@ export async function executeEstoque(message: Message, args: string[]) {
 
             let resposta = "📦 **INVENTÁRIO DO CLÃ** 📦\n```text\n";
             itens.forEach(i => {
-                resposta += `[ID: ${i.id.toString().padStart(3, '0')}] ${i.quantidade}x ${i.item.padEnd(15)} | 📍 ${i.local_armazenamento}\n`;
+                resposta += `[ID: ${i.id.toString().padStart(3, '0')}] ${i.quantidade}x ${i.item.padEnd(15)} | 📍 ${i.local}\n`;
             });
             resposta += "```";
             return message.reply(resposta);
@@ -62,7 +62,9 @@ export async function executeEstoque(message: Message, args: string[]) {
             return message.reply(resposta);
         }
 
-    } catch (error: any) {
-        return message.reply(`❌ ${error.message}`);
+    } catch (error: unknown) {
+        return message.reply(`❌ ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
     }
+
+    return message.reply("⚠️ Ação não reconhecida. Usa `!estoque` para ver as opções.");
 }

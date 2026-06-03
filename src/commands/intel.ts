@@ -1,5 +1,5 @@
 import { Message, EmbedBuilder } from "discord.js";
-import { historicoTatico, gerarRespostaAI } from "../services/groqService";
+import { historicoTatico, gerarRespostaAI } from "../services/groqService.js";
 
 const DIRETIRZ_INTEL = `
     Seja estrategista militar de DayZ focado em combate e sobrevivência.

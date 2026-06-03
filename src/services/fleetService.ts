@@ -1,4 +1,3 @@
-import { parse } from "node:path";
 import { db } from "../database/connection.js";
 import { obterDadosMembro } from "./membroService.js";
 
@@ -9,10 +8,9 @@ export async function registrarVeiculo(usuario: string, veiculo: string, x:numbe
 
     const localizacao = `(${x}, ${y})`;
 
-    await db.run(`
-        INSERT INTO veiculos (clan_id, veiculo, localizacao, observacoes) 
-        VALUES (?, ?, ?, ?)
-    `, [membro.clan_id, veiculo, localizacao, observacao]
+    await db.run(
+        'INSERT INTO veiculos (cla_id, veiculo, localizacao, observacoes) VALUES (?, ?, ?, ?)',
+        [membro.cla_id, veiculo, localizacao, observacao],
     );
 
     await db.run(
@@ -27,7 +25,7 @@ export async function listarFrota(usuario: string) {
     const membro = await obterDadosMembro(usuario);
     if (!membro) throw new Error("🚨 Acesso Negado");
 
-    return await db.all(`SELECT * FROM veiculos WHERE clan_id = ?`, [membro.cla_id]);
+    return await db.all('SELECT * FROM veiculos WHERE cla_id = ?', [membro.cla_id]);
 }
 
 export async function atualizarPeca(usuario: string, idVeiculo: number, peca: string, estado: string) {

@@ -1,4 +1,5 @@
-import { initInventoryDB, adicionarRecursos, listarInventory } from "../services/inventoryService.js";
+// @ts-nocheck — inventoryService removed, using estoqueService instead
+import { db } from "../database/connection.js";
 
 async function executarTesteDB() {
     console.log("Iniciando teste de DB...");

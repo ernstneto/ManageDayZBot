@@ -1,31 +1,29 @@
 {
   "name": "managedayzbot",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "ManageDayzBot — Bot Discord + Dashboard Web para gestão de clãs DayZ",
   "type": "module",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "tsx --watch src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
     "canvas": "^3.2.3",
+    "cors": "^2.8.6",
     "discord.js": "^14.26.2",
     "dotenv": "^17.4.2",
+    "express": "^5.2.1",
     "groq-sdk": "^1.1.2",
-    "pupeteer": "^0.0.1",
-    "puppeteer": "^24.42.0",
-    "qrcode-terminal": "^0.12.0",
+    "puppeteer": "^25.1.0",
     "sqlite": "^5.1.1",
-    "sqlite3": "^6.0.1",
-    "whatsapp-web.js": "^1.34.6"
+    "sqlite3": "^6.0.1"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
     "@types/node": "^25.6.0",
-    "@types/qrcode-terminal": "^0.12.2",
     "@types/sqlite3": "^3.1.11",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2"

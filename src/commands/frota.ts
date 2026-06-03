@@ -7,7 +7,7 @@ export async function executeFrota(message: Message, args: string[]) {
         return message.reply("🚙 **Motor Pool Tático:**\n`!frota guardar [Veiculo] [X] [Y] [Obs]`\n`!frota listar`\n`!frota peca [ID] [bateria/radiador/vela/combustivel] [Estado]`");
     }
 
-    const acao = args[0]?.toLowerCase();
+    const acao = (args[0] ?? "").toLowerCase();
     const username = message.author.username;
 
     try {
@@ -57,7 +57,8 @@ export async function executeFrota(message: Message, args: string[]) {
             return message.reply(`🔧 Manutenção registada! A peça **${peca}** do **${nomeVeiculo}** agora consta como: **${estado}**.`);
         }
 
-    } catch (error: any) {
-        return message.reply(`❌ ${error.message}`);
+        return message.reply("⚠️ Ação não reconhecida. Usa `!frota` para ver as opções.");
+    } catch (error: unknown) {
+        return message.reply(`❌ ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
     }
 }

@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import Groq from "groq-sdk";
-import { estacionarVeiculo } from "../services/inventoryService.js";
+import { registrarVeiculo } from "../services/fleetService.js";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
@@ -47,7 +47,8 @@ export async function executeFrotaAI(message: Message, textoLimpo: string) {
             return null;
         }
 
-        await estacionarVeiculo(dados.veiculo, dados.local, dados.obs || "Nenhuma", message.author.username);
+        const [x, y] = (dados.local ?? "0,0").split(",").map(Number);
+        await registrarVeiculo(message.author.username, dados.veiculo, x || 0, y || 0, dados.obs || "Nenhuma");
         return dados;
 
     } catch (error) {
